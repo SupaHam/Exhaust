@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    group = 'lc.vq'
+    version = '1.0.0-SNAPSHOT'
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    defaultTasks 'build', 'publishToMavenLocal'
+
+    jar {
+        classifier = 'original'
+    }
+
+    shadowJar {
+        classifier = ''
+    }
+
+    build.dependsOn(shadowJar)
+
+    processResources {
+        filter ReplaceTokens, tokens: [
+            "project.version": project.version
+        ]
+    }
+}
+
+subprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}

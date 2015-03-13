@@ -1,0 +1,6 @@
+rootProject.name = 'commons-parent'
+include ':commons-core'
+include ':commons-bukkit'
+
+project(':commons-core').projectDir = "$rootDir/core" as File
+project(':commons-bukkit').projectDir = "$rootDir/bukkit" as File

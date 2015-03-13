@@ -1,0 +1,4 @@
+name: kCommons
+main: lc.vq.common.bukkit.Commons
+version: '@project.version@'
+author: Kashike
