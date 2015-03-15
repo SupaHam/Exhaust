@@ -1,0 +1,25 @@
+archivesBaseName = 'exhaust-bungee'
+
+repositories {
+    maven {
+        name 'sk89q-repo'
+        url 'http://maven.sk89q.com/repo/'
+    }
+    maven {
+        name 'sonatype-oss-repo'
+        url 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+dependencies {
+    compile project(':exhaust-core')
+    compile 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
+    compile 'com.sk89q:intake:3.1.2-SNAPSHOT'
+}
+
+shadowJar {
+    from project(':exhaust-core').sourceSets.main.output
+    dependencies {
+        include(dependency('com.sk89q:intake:3.1.2-SNAPSHOT'))
+    }
+}

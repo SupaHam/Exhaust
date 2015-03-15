@@ -19,21 +19,15 @@
 
 package lc.vq.exhaust.bukkit.command;
 
-import com.google.common.base.Joiner;
 import com.sk89q.intake.CommandException;
 import com.sk89q.intake.CommandMapping;
 import com.sk89q.intake.InvalidUsageException;
 import com.sk89q.intake.InvocationCommandException;
 import com.sk89q.intake.context.CommandLocals;
-import com.sk89q.intake.dispatcher.Dispatcher;
-import com.sk89q.intake.dispatcher.SimpleDispatcher;
-import com.sk89q.intake.fluent.CommandGraph;
-import com.sk89q.intake.fluent.DispatcherNode;
-import com.sk89q.intake.parametric.ParametricBuilder;
-import com.sk89q.intake.parametric.handler.ExceptionConverterHelper;
-import com.sk89q.intake.parametric.handler.ExceptionMatch;
 import com.sk89q.intake.util.auth.AuthorizationException;
 import com.sk89q.intake.util.auth.Authorizer;
+import lc.vq.exhaust.command.AbstractCommandManager;
+import lc.vq.exhaust.command.AbstractDefaultExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -52,25 +46,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Bukkit-oriented command manager.
  */
-public class CommandManager {
+public class CommandManager extends AbstractCommandManager {
     /** A reference to the Bukkit {@link Plugin}. */
     private final Plugin plugin;
-    /** The command builder. */
-    private ParametricBuilder builder;
-    /** The command graph. */
-    private CommandGraph graph;
-    /** The command dispatcher. */
-    private Dispatcher dispatcher;
     /** The default command executor available to use. */
     private DefaultExecutor defaultExecutor;
     /** If there is an issue grabbing Bukkit's CommandMap, we create our own to use in our fallback command manager listener. */
     private CommandMap fallbackCommandMap;
 
     public CommandManager(@Nonnull final Plugin plugin) {
+        super();
         checkNotNull(plugin, "plugin");
         this.plugin = plugin;
 
-        this.builder = new ParametricBuilder();
         this.builder.addBinding(new BukkitBinding());
         this.builder.setAuthorizer(new Authorizer() {
             @Override
@@ -79,34 +67,12 @@ public class CommandManager {
                 return sender != null && sender.hasPermission(permission);
             }
         });
-        this.builder.addExceptionConverter(new ExceptionConverterHelper() {
-            @ExceptionMatch
-            public void match(AuthorizationException e) throws AuthorizationException {
-                throw e;
-            }
-
-            @ExceptionMatch
-            public void match(NumberFormatException e) {
-                throw e;
-            }
-        });
-
-        this.graph = new CommandGraph().builder(this.builder);
-
-        this.dispatcher = new SimpleDispatcher();
-        this.dispatcher = this.graph.getDispatcher();
-    }
-
-    /**
-     * Gets the command builder.
-     */
-    public DispatcherNode builder() {
-        return this.graph.commands();
     }
 
     /**
      * Once all of our commands have been registered, register all commands as dynamic commands with Bukkit.
      */
+    @Override
     public final void build() {
         for(CommandMapping command : this.dispatcher.getCommands()) {
             DynamicCommand dynamic = new DynamicCommand(
@@ -122,21 +88,11 @@ public class CommandManager {
     }
 
     /**
-     * Gets the {@link ParametricBuilder} to configure the command manager.
-     */
-    public ParametricBuilder config() {
-        return this.builder;
-    }
-
-    public Dispatcher dispatcher() {
-        return this.dispatcher;
-    }
-
-    /**
      * If you don't wish to create your own executor, you may be lazy and use the default one.
      *
      * @return a new {@link DefaultExecutor}
      */
+    @Override
     public DefaultExecutor getDefaultExecutor() {
         if(this.defaultExecutor == null) {
             this.defaultExecutor = new DefaultExecutor(this);
@@ -177,24 +133,9 @@ public class CommandManager {
     }
 
     /**
-     * Creates a single argument string, inserting the command name as the first word.
-     *
-     * @param args the original args
-     * @param name the command name
-     * @return a single argument string
-     */
-    public static String createArgString(String[] args, String name) {
-        String[] split = new String[args.length + 1];
-        System.arraycopy(args, 0, split, 1, args.length);
-        split[0] = name;
-
-        return Joiner.on(' ').join(split);
-    }
-
-    /**
      * A default command executor, to be used if the user of the command manager does not wish to use their own.
      */
-    public final class DefaultExecutor implements CommandExecutor {
+    public final class DefaultExecutor extends AbstractDefaultExecutor<CommandSender> implements CommandExecutor {
         /** A reference to the command manager. */
         private final CommandManager manager;
 
@@ -206,16 +147,15 @@ public class CommandManager {
          * Execute a command.
          *
          * @param sender The command sender.
-         * @param command The command.
-         * @param alias An alias of the command.
+         * @param name An name of the command.
          * @param args The raw arguments, in String[] format.
          * @return true
          */
         @Override
-        public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+        public boolean onCommand(CommandSender sender, String name, String[] args) {
             final BukkitCommandContext context = new BukkitCommandContext(sender.getServer(), sender);
             try {
-                this.manager.dispatcher().call(createArgString(args, alias), context.getLocals(), new String[0]);
+                this.manager.dispatcher().call(createArgString(args, name), context.getLocals(), new String[0]);
             } catch (AuthorizationException e) {
                 context.respond(ChatColor.RED + "You don't have permission.");
             } catch (CommandException e) {
@@ -239,6 +179,20 @@ public class CommandManager {
             }
 
             return true;
+        }
+
+        /**
+         * Execute a command.
+         *
+         * @param sender The command sender.
+         * @param command The command.
+         * @param alias An alias of the command.
+         * @param args The raw arguments, in String[] format.
+         * @return true
+         */
+        @Override
+        public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+            return this.onCommand(sender, alias, args);
         }
     }
 }

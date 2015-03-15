@@ -1,9 +1,9 @@
-package lc.vq.exhaust.bukkit.command;
+package lc.vq.exhaust.bungee.command;
 
 import lc.vq.exhaust.command.AbstractCommandContext;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,28 +13,28 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Bukkit-oriented command context.
  */
-public final class BukkitCommandContext extends AbstractCommandContext<Server, CommandSender, Player> {
+public final class BungeeCommandContext extends AbstractCommandContext<ProxyServer, CommandSender, ProxiedPlayer> {
 
     /** The Bukkit server. */
-    @Nonnull private final Server server;
+    @Nonnull private final ProxyServer server;
     /** The command sender. */
     @Nonnull private final CommandSender sender;
 
-    public BukkitCommandContext(@Nonnull final Server server, @Nonnull final CommandSender sender) {
+    public BungeeCommandContext(@Nonnull final ProxyServer server, @Nonnull final CommandSender sender) {
         checkNotNull(server, "server");
         checkNotNull(sender, "sender");
 
         this.server = server;
         this.sender = sender;
 
-        this.locals.put(Server.class, server);
+        this.locals.put(ProxyServer.class, server);
         this.locals.put(CommandSender.class, sender);
-        this.locals.put(Player.class, (sender instanceof Player) ? (Player) sender : null);
+        this.locals.put(ProxiedPlayer.class, (sender instanceof ProxiedPlayer) ? (ProxiedPlayer) sender : null);
     }
 
     @Nonnull
     @Override
-    public Server getServer() {
+    public ProxyServer getServer() {
         return this.server;
     }
 
@@ -46,8 +46,8 @@ public final class BukkitCommandContext extends AbstractCommandContext<Server, C
 
     @Nullable
     @Override
-    public Player getPlayer() {
-        final Player player = this.locals.get(Player.class);
+    public ProxiedPlayer getPlayer() {
+        final ProxiedPlayer player = this.locals.get(ProxiedPlayer.class);
         if(player != null) {
             return player;
         } else {

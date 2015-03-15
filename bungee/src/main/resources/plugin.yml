@@ -1,4 +1,4 @@
 name: kExhaust
-main: lc.vq.exhaust.bukkit.Exhaust
+main: lc.vq.exhaust.bungee.Exhaust
 version: '@project.version@'
 author: Kashike

@@ -77,5 +77,9 @@ subprojects {
             name 'korobi-repo'
             url 'http://repo.korobi.io/content/repositories/snapshots/'
         }
+        maven {
+            name 'sk89q-repo'
+            url 'http://maven.sk89q.com/repo/'
+        }
     }
 }

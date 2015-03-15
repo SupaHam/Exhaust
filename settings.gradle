@@ -1,6 +1,8 @@
 rootProject.name = 'exhaust-parent'
 include ':exhaust-core'
 include ':exhaust-bukkit'
+include ':exhaust-bungee'
 
 project(':exhaust-core').projectDir = "$rootDir/core" as File
 project(':exhaust-bukkit').projectDir = "$rootDir/bukkit" as File
+project(':exhaust-bungee').projectDir = "$rootDir/bungee" as File
