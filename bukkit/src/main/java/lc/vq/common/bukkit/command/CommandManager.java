@@ -22,6 +22,7 @@ package lc.vq.common.bukkit.command;
 import com.google.common.base.Joiner;
 import com.sk89q.intake.CommandException;
 import com.sk89q.intake.CommandMapping;
+import com.sk89q.intake.InvalidUsageException;
 import com.sk89q.intake.InvocationCommandException;
 import com.sk89q.intake.context.CommandLocals;
 import com.sk89q.intake.dispatcher.Dispatcher;
@@ -223,6 +224,14 @@ public class CommandManager {
                         context.respond(ChatColor.RED + "Number expected, string received instead.");
                         return true;
                     }
+                } else if(e instanceof InvalidUsageException) {
+                    InvalidUsageException ue = (InvalidUsageException) e;
+                    if(ue.isFullHelpSuggested()) {
+                        context.respond(ChatColor.RED + ue.getSimpleUsageString("/"));
+                    } else {
+                        context.respond(ChatColor.RED + "Invalid usage.");
+                    }
+                    return true;
                 }
 
                 e.printStackTrace();
