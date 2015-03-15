@@ -1,6 +1,6 @@
-rootProject.name = 'commons-parent'
-include ':commons-core'
-include ':commons-bukkit'
+rootProject.name = 'exhaust-parent'
+include ':exhaust-core'
+include ':exhaust-bukkit'
 
-project(':commons-core').projectDir = "$rootDir/core" as File
-project(':commons-bukkit').projectDir = "$rootDir/bukkit" as File
+project(':exhaust-core').projectDir = "$rootDir/core" as File
+project(':exhaust-bukkit').projectDir = "$rootDir/bukkit" as File

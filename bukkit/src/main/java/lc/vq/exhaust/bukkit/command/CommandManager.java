@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package lc.vq.common.bukkit.command;
+package lc.vq.exhaust.bukkit.command;
 
 import com.google.common.base.Joiner;
 import com.sk89q.intake.CommandException;

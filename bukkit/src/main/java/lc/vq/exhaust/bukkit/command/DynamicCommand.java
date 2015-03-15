@@ -1,4 +1,4 @@
-package lc.vq.common.bukkit.command;
+package lc.vq.exhaust.bukkit.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;

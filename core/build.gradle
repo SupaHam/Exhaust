@@ -1,4 +1,4 @@
-archivesBaseName = 'commons-core'
+archivesBaseName = 'exhaust-core'
 
 dependencies {
     compile 'com.google.guava:guava:17.0'

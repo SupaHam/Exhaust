@@ -1,4 +1,4 @@
-package lc.vq.common.bukkit.command;
+package lc.vq.exhaust.bukkit.command;
 
 import com.sk89q.intake.context.CommandLocals;
 import org.bukkit.Server;

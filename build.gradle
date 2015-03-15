@@ -71,5 +71,9 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {
+            name 'korobi-repo'
+            url 'http://repo.korobi.io/content/repositories/snapshots/'
+        }
     }
 }

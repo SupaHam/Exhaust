@@ -1,4 +1,4 @@
-name: kCommons
-main: lc.vq.common.bukkit.Commons
+name: kExhaust
+main: lc.vq.common.exhaust.Exhaust
 version: '@project.version@'
 author: Kashike
