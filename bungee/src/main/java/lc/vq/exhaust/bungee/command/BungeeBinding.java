@@ -26,7 +26,7 @@ public class BungeeBinding extends BindingHelper {
         if(sender != null) {
             return sender;
         } else {
-            throw new ParameterException("Uh oh! The sender could not be found.");
+            throw new ParameterException("Missing CommandSender.");
         }
     }
 
@@ -43,7 +43,7 @@ public class BungeeBinding extends BindingHelper {
         if(player != null) {
             return player;
         } else {
-            throw new ParameterException("Uh oh! The player could not be found.");
+            throw new ParameterException("Caller is not a ProxiedPlayer.");
         }
     }
 }

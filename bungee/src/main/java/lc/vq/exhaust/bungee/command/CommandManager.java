@@ -119,11 +119,9 @@ public class CommandManager extends AbstractCommandManager {
                     }
                 } else if(e instanceof InvalidUsageException) {
                     InvalidUsageException ue = (InvalidUsageException) e;
-                    if(ue.isFullHelpSuggested()) {
-                        context.respond(ChatColor.RED + ue.getSimpleUsageString("/"));
-                    } else {
-                        context.respond(ChatColor.RED + "Invalid usage.");
-                    }
+                    String message = ue.getMessage();
+                    context.respond(ChatColor.RED + (message != null ? message : "The command was not used properly (no more help available)"));
+                    context.respond(ChatColor.RED + "Usage: " + ue.getSimpleUsageString("/"));
                     return true;
                 }
 
