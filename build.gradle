@@ -43,25 +43,27 @@ allprojects {
         ]
     }
 
-    publishing {
-        repositories {
-            maven {
-                if(project.version.endsWith('-SNAPSHOT')) {
-                    url 'http://repo.korobi.io/content/repositories/snapshots/'
-                } else {
-                    url 'http://repo.korobi.io/content/repositories/releases/'
-                }
-                credentials {
-                    username project.getProperty("maven.authUser")
-                    password project.getProperty("maven.authPass")
+    if(project.hasProperty("maven.authUser")) {
+        publishing {
+            repositories {
+                maven {
+                    if(project.version.endsWith('-SNAPSHOT')) {
+                        url 'http://repo.korobi.io/content/repositories/snapshots/'
+                    } else {
+                        url 'http://repo.korobi.io/content/repositories/releases/'
+                    }
+                    credentials {
+                        username project.getProperty("maven.authUser")
+                        password project.getProperty("maven.authPass")
+                    }
                 }
             }
-        }
 
-        publications {
-            shadow(MavenPublication) {
-                from components.java
-                artifact shadowJar
+            publications {
+                shadow(MavenPublication) {
+                    from components.java
+                    artifact shadowJar
+                }
             }
         }
     }
