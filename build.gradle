@@ -48,9 +48,9 @@ allprojects {
             repositories {
                 maven {
                     if(project.version.endsWith('-SNAPSHOT')) {
-                        url 'http://repo.korobi.io/content/repositories/snapshots/'
+                        url 'http://repo.ellune.net/content/repositories/snapshots/'
                     } else {
-                        url 'http://repo.korobi.io/content/repositories/releases/'
+                        url 'http://repo.ellune.net/content/repositories/releases/'
                     }
                     credentials {
                         username project.getProperty("maven.authUser")
@@ -74,8 +74,8 @@ subprojects {
         mavenLocal()
         mavenCentral()
         maven {
-            name 'korobi-repo'
-            url 'http://repo.korobi.io/content/repositories/snapshots/'
+            name 'ellune-repo'
+            url 'http://repo.ellune.net/content/groups/public/'
         }
         maven {
             name 'sk89q-repo'
