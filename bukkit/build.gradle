@@ -14,12 +14,12 @@ repositories {
 dependencies {
     compile project(':exhaust-core')
     compile 'org.bukkit:bukkit:1.8.3-R0.1-SNAPSHOT'
-    compile 'com.sk89q:intake:3.1.2-SNAPSHOT'
+    compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
 }
 
 shadowJar {
     from project(':exhaust-core').sourceSets.main.output
     dependencies {
-        include(dependency('com.sk89q:intake:3.1.2-SNAPSHOT'))
+        include(dependency('com.sk89q.intake:intake:4.0-SNAPSHOT'))
     }
 }

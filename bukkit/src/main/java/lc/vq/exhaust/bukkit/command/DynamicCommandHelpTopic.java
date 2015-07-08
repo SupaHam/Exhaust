@@ -19,7 +19,7 @@
 package lc.vq.exhaust.bukkit.command;
 
 import com.sk89q.intake.CommandMapping;
-import com.sk89q.intake.context.CommandLocals;
+import com.sk89q.intake.argument.Namespace;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.help.HelpTopic;
@@ -64,11 +64,11 @@ public class DynamicCommandHelpTopic extends HelpTopic {
 
     @Override
     public boolean canSee(CommandSender sender) {
-        CommandLocals locals = new CommandLocals();
-        locals.put(CommandSender.class, sender);
+        Namespace namespace = new Namespace();
+        namespace.put(CommandSender.class, sender);
 
         CommandMapping command = this.command.getManager().dispatcher().get(this.command.getName());
-        return command != null && command.getCallable().testPermission(locals);
+        return command != null && command.getCallable().testPermission(namespace);
     }
 
     @Override
