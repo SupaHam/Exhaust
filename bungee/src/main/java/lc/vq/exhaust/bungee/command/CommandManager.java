@@ -20,6 +20,7 @@ import lc.vq.exhaust.command.ParameterContainer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -130,26 +131,54 @@ public class CommandManager extends AbstractCommandManager {
             try {
                 this.manager.dispatcher().call(createArgString(args, name), namespace, Collections.<String>emptyList());
             } catch (AuthorizationException e) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission.");
+                sender.sendMessage(
+                        new ComponentBuilder("You don't have permission.")
+                                .color(ChatColor.RED)
+                                .create()
+                );
             } catch (InvocationCommandException e) {
                 if(e.getCause() instanceof NumberFormatException) {
-                    sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
+                    sender.sendMessage(
+                            new ComponentBuilder("Number expected, string received instead.")
+                                    .color(ChatColor.RED)
+                                    .create()
+                    );
+
                     return true;
                 }
 
                 e.printStackTrace();
-                sender.sendMessage(ChatColor.RED + "An unexpected error occurred.");
+
+                sender.sendMessage(
+                        new ComponentBuilder("An unexpected error occurred.")
+                                .color(ChatColor.RED)
+                                .create()
+                );
             } catch (CommandException e) {
                 if(e instanceof InvalidUsageException) {
                     InvalidUsageException ue = (InvalidUsageException) e;
                     String message = ue.getMessage();
-                    sender.sendMessage(ChatColor.RED + (message != null ? message : "The command was not used properly (no more help available)"));
-                    sender.sendMessage(ChatColor.RED + "Usage: " + ue.getSimpleUsageString("/"));
+                    sender.sendMessage(
+                            new ComponentBuilder(message != null ? message : "The command was not used properly (no more help available)")
+                                    .color(ChatColor.RED)
+                                    .create()
+                    );
+
+                    sender.sendMessage(
+                            new ComponentBuilder("Usage: " + ue.getSimpleUsageString("/"))
+                                    .color(ChatColor.RED)
+                                    .create()
+                    );
+
                     return true;
                 }
 
                 e.printStackTrace();
-                sender.sendMessage(ChatColor.RED + "An unexpected error occurred.");
+                sender.sendMessage(
+                        new ComponentBuilder("An unexpected error occurred.")
+                                .color(ChatColor.RED)
+                                .create()
+                );
             }
 
             return true;
