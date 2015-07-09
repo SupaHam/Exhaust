@@ -1,7 +1,7 @@
 package lc.vq.exhaust.example.command;
 
 import com.sk89q.intake.Command;
-import com.sk89q.intake.context.CommandContext;
+import com.sk89q.intake.argument.CommandContext;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
