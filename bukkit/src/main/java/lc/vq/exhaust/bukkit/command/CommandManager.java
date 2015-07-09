@@ -77,7 +77,7 @@ public class CommandManager extends AbstractCommandManager {
         this.builder.setAuthorizer(new Authorizer() {
             @Override
             public boolean testPermission(Namespace namespace, String permission) {
-                return checkNotNull((CommandSender) namespace.get(CommandSender.class), "Current sender not available.").hasPermission(permission);
+                return checkNotNull(namespace.get(CommandSender.class), "Current sender not available.").hasPermission(permission);
             }
         });
     }
