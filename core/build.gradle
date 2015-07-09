@@ -3,5 +3,5 @@ archivesBaseName = 'exhaust-core'
 dependencies {
     compile 'com.google.guava:guava:17.0'
     compile 'com.google.code.findbugs:jsr305:3.0.0'
-    compile 'com.sk89q:intake:3.1.2-SNAPSHOT'
+    compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
 }

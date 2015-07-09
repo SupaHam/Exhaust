@@ -20,7 +20,7 @@ allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     group = 'lc.vq'
-    version = '1.0.0-SNAPSHOT'
+    version = '1.0.1-SNAPSHOT'
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
@@ -39,15 +39,16 @@ allprojects {
 
     processResources {
         filter ReplaceTokens, tokens: [
-            "project.version": project.version
+                "project.version": project.version
         ]
     }
 
-    if(project.hasProperty("maven.authUser")) {
-        publishing {
+
+    publishing {
+        if(project.hasProperty("maven.authUser")) {
             repositories {
                 maven {
-                    if(project.version.endsWith('-SNAPSHOT')) {
+                    if (project.version.endsWith('-SNAPSHOT')) {
                         url 'http://repo.ellune.net/content/repositories/snapshots/'
                     } else {
                         url 'http://repo.ellune.net/content/repositories/releases/'
@@ -58,12 +59,12 @@ allprojects {
                     }
                 }
             }
+        }
 
-            publications {
-                shadow(MavenPublication) {
-                    from components.java
-                    artifact shadowJar
-                }
+        publications {
+            shadow(MavenPublication) {
+                from components.java
+                artifact shadowJar
             }
         }
     }

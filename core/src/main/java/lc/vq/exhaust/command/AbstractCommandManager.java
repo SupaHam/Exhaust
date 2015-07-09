@@ -1,15 +1,21 @@
 package lc.vq.exhaust.command;
 
 import com.google.common.base.Joiner;
+import com.sk89q.intake.Intake;
 import com.sk89q.intake.dispatcher.Dispatcher;
 import com.sk89q.intake.fluent.CommandGraph;
 import com.sk89q.intake.fluent.DispatcherNode;
+import com.sk89q.intake.parametric.Injector;
 import com.sk89q.intake.parametric.ParametricBuilder;
 import com.sk89q.intake.parametric.handler.ExceptionConverterHelper;
 import com.sk89q.intake.parametric.handler.ExceptionMatch;
+import com.sk89q.intake.parametric.provider.PrimitivesModule;
 import com.sk89q.intake.util.auth.AuthorizationException;
 
 public abstract class AbstractCommandManager {
+
+    protected final Injector injector = Intake.createInjector();
+
     /** The command builder. */
     protected final ParametricBuilder builder;
     /** The command graph. */
@@ -17,8 +23,11 @@ public abstract class AbstractCommandManager {
     /** The command dispatcher. */
     protected final Dispatcher dispatcher;
 
-    public AbstractCommandManager() {
-        this.builder = new ParametricBuilder();
+    public AbstractCommandManager(ParameterContainer parameterContainer) {
+        this.injector.install(new PrimitivesModule());
+        this.injector.install(new ExhaustModule(parameterContainer));
+
+        this.builder = new ParametricBuilder(injector);
         this.builder.addExceptionConverter(new ExceptionConverterHelper() {
             @ExceptionMatch
             public void match(AuthorizationException e) throws AuthorizationException {
@@ -51,6 +60,10 @@ public abstract class AbstractCommandManager {
 
     public Dispatcher dispatcher() {
         return this.dispatcher;
+    }
+
+    public Injector injector() {
+        return injector;
     }
 
     public abstract AbstractDefaultExecutor getDefaultExecutor();

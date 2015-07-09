@@ -19,29 +19,36 @@
 
 package lc.vq.exhaust.bukkit.command;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.sk89q.intake.CommandException;
 import com.sk89q.intake.CommandMapping;
 import com.sk89q.intake.InvalidUsageException;
 import com.sk89q.intake.InvocationCommandException;
-import com.sk89q.intake.context.CommandLocals;
+import com.sk89q.intake.argument.Namespace;
 import com.sk89q.intake.util.auth.AuthorizationException;
 import com.sk89q.intake.util.auth.Authorizer;
+import lc.vq.exhaust.bukkit.provider.BukkitModule;
+import lc.vq.exhaust.bukkit.provider.core.CommandSenderProvider;
+import lc.vq.exhaust.bukkit.provider.core.PlayerProvider;
+import lc.vq.exhaust.bukkit.provider.core.PlayerSenderProvider;
 import lc.vq.exhaust.command.AbstractCommandManager;
 import lc.vq.exhaust.command.AbstractDefaultExecutor;
+import lc.vq.exhaust.command.ParameterContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Field;
-
 import javax.annotation.Nonnull;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.lang.reflect.Field;
+import java.util.Collections;
 
 /**
  * A Bukkit-oriented command manager.
@@ -55,16 +62,22 @@ public class CommandManager extends AbstractCommandManager {
     private CommandMap fallbackCommandMap;
 
     public CommandManager(@Nonnull final Plugin plugin) {
-        super();
-        checkNotNull(plugin, "plugin");
-        this.plugin = plugin;
+        super(new ParameterContainer<>(
+                CommandSender.class,
+                Player.class,
+                Server.class,
+                CommandSenderProvider.INSTANCE,
+                PlayerSenderProvider.INSTANCE,
+                PlayerProvider.INSTANCE,
+                plugin.getServer()
+        ));
 
-        this.builder.addBinding(new BukkitBinding());
+        this.plugin = checkNotNull(plugin);
+        this.injector.install(new BukkitModule());
         this.builder.setAuthorizer(new Authorizer() {
             @Override
-            public boolean testPermission(CommandLocals locals, String permission) {
-                CommandSender sender = locals.get(CommandSender.class);
-                return sender != null && sender.hasPermission(permission);
+            public boolean testPermission(Namespace namespace, String permission) {
+                return checkNotNull((CommandSender) namespace.get(CommandSender.class), "Current sender not available.").hasPermission(permission);
             }
         });
     }
@@ -100,6 +113,7 @@ public class CommandManager extends AbstractCommandManager {
 
         return this.defaultExecutor;
     }
+
 
     /** @author zml2008 */
     private CommandMap getCommandMap() {
@@ -153,27 +167,32 @@ public class CommandManager extends AbstractCommandManager {
          */
         @Override
         public boolean onCommand(CommandSender sender, String name, String[] args) {
-            final BukkitCommandContext context = new BukkitCommandContext(sender.getServer(), sender);
+            Namespace namespace = new Namespace();
+            namespace.put(CommandSender.class, sender);
+
             try {
-                this.manager.dispatcher().call(createArgString(args, name), context.getLocals(), new String[0]);
+                this.manager.dispatcher().call(createArgString(args, name), namespace, Collections.<String>emptyList());
             } catch (AuthorizationException e) {
-                context.respond(ChatColor.RED + "You don't have permission.");
-            } catch (CommandException e) {
-                if(e instanceof InvocationCommandException) {
-                    if(e.getCause() instanceof NumberFormatException) {
-                        context.respond(ChatColor.RED + "Number expected, string received instead.");
-                        return true;
-                    }
-                } else if(e instanceof InvalidUsageException) {
-                    InvalidUsageException ue = (InvalidUsageException) e;
-                    String message = ue.getMessage();
-                    context.respond(ChatColor.RED + (message != null ? message : "The command was not used properly (no more help available)"));
-                    context.respond(ChatColor.RED + "Usage: " + ue.getSimpleUsageString("/"));
+                sender.sendMessage(ChatColor.RED + "You don't have permission.");
+            } catch (InvocationCommandException e) {
+                if(e.getCause() instanceof NumberFormatException) {
+                    sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
                     return true;
                 }
 
                 e.printStackTrace();
-                context.respond(ChatColor.RED + "An unexpected error occurred.");
+                sender.sendMessage(ChatColor.RED + "An unexpected error occurred.");
+            } catch (CommandException e) {
+                if(e instanceof InvalidUsageException) {
+                    InvalidUsageException ue = (InvalidUsageException) e;
+                    String message = ue.getMessage();
+                    sender.sendMessage(ChatColor.RED + (message != null ? message : "The command was not used properly (no more help available)"));
+                    sender.sendMessage(ChatColor.RED + "Usage: " + ue.getSimpleUsageString("/"));
+                    return true;
+                }
+
+                e.printStackTrace();
+                sender.sendMessage(ChatColor.RED + "An unexpected error occurred.");
             }
 
             return true;
