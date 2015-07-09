@@ -74,13 +74,19 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+
         maven {
             name 'ellune-repo'
             url 'http://repo.ellune.net/content/groups/public/'
         }
+
         maven {
             name 'sk89q-repo'
             url 'http://maven.sk89q.com/repo/'
         }
+    }
+
+    dependencies {
+        compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
     }
 }

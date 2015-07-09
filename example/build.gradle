@@ -2,10 +2,6 @@ archivesBaseName = 'exhaust-example'
 
 repositories {
     maven {
-        name 'sk89q-repo'
-        url 'http://maven.sk89q.com/repo/'
-    }
-    maven {
         name 'spigotmc-repo'
         url 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
@@ -13,13 +9,13 @@ repositories {
 
 dependencies {
     compile project(':exhaust-bukkit')
-    compile 'org.bukkit:bukkit:1.8.3-R0.1-SNAPSHOT'
-    compile 'com.sk89q:intake:3.1.2-SNAPSHOT'
+    compile 'org.bukkit:bukkit:1.8.7-R0.1-SNAPSHOT'
 }
 
 shadowJar {
     from project(':exhaust-core').sourceSets.main.output
+
     dependencies {
-        include(dependency('com.sk89q:intake:3.1.2-SNAPSHOT'))
+        include(dependency('com.sk89q.intake:intake:4.0-SNAPSHOT'))
     }
 }
