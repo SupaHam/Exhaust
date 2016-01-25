@@ -87,6 +87,6 @@ subprojects {
     }
 
     dependencies {
-        compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
+        compile 'com.sk89q.intake:intake:4.2-SNAPSHOT'
     }
 }

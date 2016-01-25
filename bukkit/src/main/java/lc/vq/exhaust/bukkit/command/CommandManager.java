@@ -21,6 +21,8 @@ package lc.vq.exhaust.bukkit.command;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Joiner;
+
 import com.sk89q.intake.CommandException;
 import com.sk89q.intake.CommandMapping;
 import com.sk89q.intake.InvalidUsageException;
@@ -187,7 +189,7 @@ public class CommandManager extends AbstractCommandManager {
                     InvalidUsageException ue = (InvalidUsageException) e;
                     String message = ue.getMessage();
                     sender.sendMessage(ChatColor.RED + (message != null ? message : "The command was not used properly (no more help available)"));
-                    sender.sendMessage(ChatColor.RED + "Usage: " + ue.getSimpleUsageString("/"));
+                    sender.sendMessage(ChatColor.RED + "Usage: /" + Joiner.on(" ").join(ue.getAliasStack()));
                     return true;
                 }
 
