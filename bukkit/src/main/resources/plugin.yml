@@ -1,4 +1,4 @@
 name: kExhaust
-main: lc.vq.exhaust.bukkit.Exhaust
+main: net.ellune.exhaust.bukkit.Exhaust
 version: '@project.version@'
 author: Kashike

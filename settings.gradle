@@ -1,4 +1,5 @@
 rootProject.name = 'exhaust-parent'
+
 include ':exhaust-core'
 include ':exhaust-bukkit'
 include ':exhaust-bungee'
