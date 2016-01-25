@@ -2,6 +2,8 @@ package lc.vq.exhaust.bungee.command;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Joiner;
+
 import com.sk89q.intake.CommandException;
 import com.sk89q.intake.CommandMapping;
 import com.sk89q.intake.InvalidUsageException;
@@ -165,7 +167,7 @@ public class CommandManager extends AbstractCommandManager {
                     );
 
                     sender.sendMessage(
-                            new ComponentBuilder("Usage: " + ue.getSimpleUsageString("/"))
+                            new ComponentBuilder("Usage: /" + Joiner.on(" ").join(ue.getAliasStack()))
                                     .color(ChatColor.RED)
                                     .create()
                     );
