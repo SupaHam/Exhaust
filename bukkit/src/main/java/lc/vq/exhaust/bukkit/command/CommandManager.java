@@ -191,7 +191,6 @@ public class CommandManager extends AbstractCommandManager {
                     return true;
                 }
 
-                e.printStackTrace();
                 sender.sendMessage(ChatColor.RED + "An unexpected error occurred.");
             }
 
